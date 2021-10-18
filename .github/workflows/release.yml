@@ -1,0 +1,14 @@
+name: release
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+jobs:
+  copy-to-repository:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - run: ls
+      - name: Get the version
+        run: echo ${GITHUB_REF#refs/tags/}
