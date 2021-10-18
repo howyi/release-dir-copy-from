@@ -5,6 +5,9 @@ on:
       - "v[0-9]+.[0-9]+.[0-9]+"
 jobs:
   copy-to-repository:
+    strategy:
+      matrix:
+        repo: ['howyi/release-dir-copy-to']
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -12,3 +15,10 @@ jobs:
       - run: ls
       - name: Get the version
         run: echo ${GITHUB_REF#refs/tags/}
+      - name: dispatch target-updated
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          repository: ${{ matrix.repo }}
+          event-type: target-released
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
